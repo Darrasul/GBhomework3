@@ -1,4 +1,7 @@
 package homework.firstLesson.fruits;
 
-public interface Fruit {
+public interface Fruit{
+
+    double getWeight();
+
 }
