@@ -1,20 +1,22 @@
 package lessons.lesson5;
 
 import java.util.concurrent.CyclicBarrier;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Car implements Runnable {
 
     private static int CARS_COUNT;
-    CyclicBarrier cyclicBarrier;
+    private CyclicBarrier cyclicBarrier;
+    private WaitingNotifier waitingNotifier;
+    private Race race;
+    private int speed;
+    private String name;
+    private static AtomicBoolean isWinner = new AtomicBoolean(false);
 
     static {
         CARS_COUNT = 0;
     }
 
-    private Race race;
-
-    private int speed;
-    private String name;
     public String getName() {
         return name;
     }
@@ -23,12 +25,23 @@ public class Car implements Runnable {
         return speed;
     }
 
-    public Car(Race race, int speed, CyclicBarrier cyclicBarrier) {
+    public static AtomicBoolean getIsWinner() {
+        return isWinner;
+    }
+
+    public Car(Race race, int speed, CyclicBarrier cyclicBarrier, WaitingNotifier waitingNotifier) {
         this.race = race;
         this.speed = speed;
+        this.cyclicBarrier = cyclicBarrier;
+        this.waitingNotifier = waitingNotifier;
         CARS_COUNT++;
         this.name = "Участник #" + CARS_COUNT;
-        this.cyclicBarrier = cyclicBarrier;
+    }
+
+    private void checkWinner() {
+        if (!isWinner.getAndSet(true)){
+            System.out.println(this.name + " первым завершает гонку");
+        }
     }
 
     @Override
@@ -40,21 +53,13 @@ public class Car implements Runnable {
             cyclicBarrier.await();
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            System.out.println("ВАЖНОЕ ОБЪЯВЛЕНИЕ >>> Гонка началась!!!");
         }
 
-        try {
-            for (int i = 0; i < race.getStages().size(); i++) {
-                race.getStages().get(i).go(this);
-            }
-            MainClass.isWinner(this);
-            cyclicBarrier.await();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            System.out.println("ВАЖНОЕ ОБЪЯВЛЕНИЕ >>> Гонка закончилась!!!");
-            System.out.println("ПОБЕДИЛ " + MainClass.getWinner());
+        for (int i = 0; i < race.getStages().size(); i++) {
+            race.getStages().get(i).go(this);
         }
+
+        checkWinner();
+        waitingNotifier.notifyAboutFinish();
     }
 }
