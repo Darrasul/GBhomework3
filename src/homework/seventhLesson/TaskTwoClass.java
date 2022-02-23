@@ -9,7 +9,7 @@ package homework.seventhLesson;
 
 public class TaskTwoClass implements SuperTaskClass {
 
-    public void start(String className) throws ClassNotFoundException {
+    public void start(String className) {
         Class clazz = className.getClass();
         start(clazz);
     }

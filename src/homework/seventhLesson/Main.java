@@ -6,13 +6,9 @@ public class Main {
         SuperTaskClass firstTask = new TaskOneClass();
         SuperTaskClass secondTask = new TaskTwoClass();
 
-        try {
-            firstTask.start(TaskOneClass.class);
-            System.out.println("-------------------");
-            secondTask.start("TaskTwoClass");
-        } catch (ClassNotFoundException e) {
-            System.err.println("Fail dont exist");
-            e.printStackTrace();
-        }
+        firstTask.start(TaskOneClass.class);
+        System.out.println("-------------------");
+        secondTask.start("TaskTwoClass");
+
     }
 }

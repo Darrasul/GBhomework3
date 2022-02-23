@@ -17,28 +17,3 @@ public @interface Test {
     Test[] value();
 }
 
-@Retention(RetentionPolicy.RUNTIME)
-@Inherited
-@Repeatable(BFSuite.class)
-@interface BeforeSuite {
-    String name();
-}
-
-@Retention(RetentionPolicy.RUNTIME)
-@Inherited
-@interface BFSuite {
-    BeforeSuite[] value();
-}
-
-@Retention(RetentionPolicy.RUNTIME)
-@Inherited
-@Repeatable(AFSuite.class)
-@interface AfterSuite {
-    String name();
-}
-
-@Retention(RetentionPolicy.RUNTIME)
-@Inherited
-@interface AFSuite {
-    AfterSuite[] value();
-}
